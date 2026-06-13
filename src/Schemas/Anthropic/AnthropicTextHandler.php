@@ -104,8 +104,10 @@ class AnthropicTextHandler extends BedrockTextHandler
             toolCalls: $this->extractToolCalls($data),
             toolResults: [],
             usage: new Usage(
-                promptTokens: data_get($data, 'usage.input_tokens'),
-                completionTokens: data_get($data, 'usage.output_tokens'),
+                // Some models (e.g. Claude Haiku 4.5 via inference profiles)
+                // omit token counts in places; Usage requires non-null ints.
+                promptTokens: (int) data_get($data, 'usage.input_tokens', 0),
+                completionTokens: (int) data_get($data, 'usage.output_tokens', 0),
                 cacheWriteInputTokens: data_get($data, 'usage.cache_creation_input_tokens'),
                 cacheReadInputTokens: data_get($data, 'usage.cache_read_input_tokens')
             ),
